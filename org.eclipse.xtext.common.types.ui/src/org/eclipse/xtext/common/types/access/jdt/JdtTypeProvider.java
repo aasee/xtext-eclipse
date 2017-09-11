@@ -77,6 +77,8 @@ public class JdtTypeProvider extends AbstractJvmTypeProvider implements IJdtType
 	
 	private static final String PRIMITIVES = URIHelperConstants.PRIMITIVES_URI.segment(0);
 
+	private static final boolean SKIP_SECONDARY_TYPES = Boolean.getBoolean("xtext.skipSecondaryTypes");
+	
 	private final IJavaProject javaProject;
 
 	private final TypeURIHelper typeUriHelper;
@@ -358,6 +360,9 @@ public class JdtTypeProvider extends AbstractJvmTypeProvider implements IJdtType
 	 * @since 2.9
 	 */
 	protected IType findSecondaryType(String packageName, final String typeName)  throws JavaModelException {
+		if (SKIP_SECONDARY_TYPES) {
+			return null;
+		}
 		IPackageFragmentRoot[] sourceFolders = getSourceFolders();
 		IndexManager indexManager = JavaModelManager.getIndexManager();
 		if (indexManager.awaitingJobsCount() > 0) { // still indexing - don't enter a busy wait loop but ask the source folders directly
